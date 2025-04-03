@@ -76,3 +76,81 @@ void leer_csv(const char* filename) {
         exit(1);
     }
 
+    char line[MAX_LINE];
+    fgets(line, MAX_LINE, file); // Lee encabezado
+
+    while (fgets(line, MAX_LINE, file) && total_ventas < MAX_PIZZAS) {
+        char* campos[12];
+        int columna = 0;
+        char* ptr = line;
+
+        // Separación de campos con manejo de comillas
+        while (*ptr && columna < 12) {
+            char* start;
+            if (*ptr == '"') {
+                ptr++;
+                start = ptr;
+                while (*ptr && !(*ptr == '"' && *(ptr + 1) == ',')) ptr++;
+                if (*ptr == '"') *ptr = '\0';
+                ptr += 2;
+            } else {
+                start = ptr;
+                while (*ptr && *ptr != ',') ptr++;
+                if (*ptr == ',') *ptr = '\0';
+                ptr++;
+            }
+            campos[columna++] = start;
+        }
+
+        // Asignación de campos si están completos
+        if (columna == 12) {
+            strcpy(ventas[total_ventas].pizza_id, campos[2]);
+            ventas[total_ventas].quantity = atoi(campos[3]);
+            strcpy(ventas[total_ventas].order_date, campos[4]);
+            ventas[total_ventas].total_price = atof(campos[7]);
+            strcpy(ventas[total_ventas].pizza_category, campos[9]);
+            strcpy(ventas[total_ventas].pizza_ingredients, campos[10]);
+            strcpy(ventas[total_ventas].pizza_name, campos[11]);
+
+            // Quitar salto de línea final
+            ventas[total_ventas].pizza_name[strcspn(ventas[total_ventas].pizza_name, "\r\n")] = 0;
+
+            total_ventas++;
+        }
+    }
+
+    fclose(file);
+}
+
+// Encuentra e imprime la pizza más vendida
+void pizza_mas_vendida() {
+    int max = 0;
+    for (int i = 1; i < total_pizzas_unicas; i++) {
+        if (resumen[i].cantidad_total > resumen[max].cantidad_total) {
+            max = i;
+        }
+    }
+    printf("Pizza mas vendida: %s (%d ventas)\n", resumen[max].nombre, resumen[max].cantidad_total);
+}
+
+// Encuentra e imprime la pizza menos vendida
+void pizza_menos_vendida() {
+    int min = 0;
+    for (int i = 1; i < total_pizzas_unicas; i++) {
+        if (resumen[i].cantidad_total < resumen[min].cantidad_total) {
+            min = i;
+        }
+    }
+    printf("Pizza menos vendida: %s (%d ventas)\n", resumen[min].nombre, resumen[min].cantidad_total);
+}
+
+// Encuentra fechas con más o menos ventas (por dinero o por cantidad)
+void fecha_mas_menos(const char* tipo, int por_dinero) {
+    float total_por_dia[1000] = {0};
+    int cantidad_por_dia[1000] = {0};
+    char fechas[1000][20];
+    int total_fechas = 0;
+
+    // Agrupa por fecha
+    for (int i = 0; i < total_ventas; i++) {
+        int index = -1;
