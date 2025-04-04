@@ -36,3 +36,5 @@
 -Vicente: Este informe fue muy interesante para ver como las cosas que nos rodean tienen una complejidad mucho más profunda de lo que pensabamos, pero a su vez cuando lo entendemos podemos ver que tampoco es mucho más complejo.\
 -Camilo: Una cosa que me llamo mucho la atención fue al momento de tener nuestro diagrama se viese tan simple comparado con nuestro codigo pero a la vez muestra como todo lo que hacemos es ver como realmente se logran estas cosas tan del dia a dia.\
 -Anibal:Lo más interesante de esta tarea fue la forma de como no nos entregaron más de 3 datos de los cuales hicieramos nosotros nuestro resto de datos para trabajar lo que le da una visión propia a este trabajo.
+## 5. Conclusión 
+-Como grupo llegamos a la conclusión de que en verdad el lenguaje C no es el optimo para la realizacion de esta tarea pero fue muy util para comprender como se utiliza el paradigma procedural y para poder entender como es que funcionan distintas tiendas con sus patrones, por ejemplo desde las pizzerias, pudimos relacionarlo a como funcionan en los outlets que se podrian ocupar las ventas para saber que es lo mejor para vender a futuro y muchas otras cosas.
