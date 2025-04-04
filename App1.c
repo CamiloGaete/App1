@@ -234,3 +234,82 @@ void ingrediente_mas_vendido() {
         strcpy(temp, ventas[i].pizza_ingredients);
         char* token = strtok(temp, ",");
 
+        while (token) {
+            while (*token == ' ') token++; // Elimina espacios iniciales
+            int existe = 0;
+            for (int j = 0; j < total; j++) {
+                if (strcmp(ingredientes[j], token) == 0) {
+                    cantidades[j] += ventas[i].quantity;
+                    existe = 1;
+                    break;
+                }
+            }
+            if (!existe) {
+                strcpy(ingredientes[total], token);
+                cantidades[total++] = ventas[i].quantity;
+            }
+            token = strtok(NULL, ",");
+        }
+    }
+
+    int max = 0;
+    for (int i = 1; i < total; i++) {
+        if (cantidades[i] > cantidades[max]) max = i;
+    }
+    printf("Ingrediente mas vendido: %s (%d unidades)\n", ingredientes[max], cantidades[max]);
+}
+
+// Muestra la cantidad total de pizzas por categoría
+void cantidad_por_categoria() {
+    char categorias[100][MAX_NAME];
+    int cantidades[100] = {0};
+    int total = 0;
+    for (int i = 0; i < total_ventas; i++) {
+        int existe = 0;
+        for (int j = 0; j < total; j++) {
+            if (strcmp(categorias[j], ventas[i].pizza_category) == 0) {
+                cantidades[j] += ventas[i].quantity;
+                existe = 1;
+                break;
+            }
+        }
+        if (!existe) {
+            strcpy(categorias[total], ventas[i].pizza_category);
+            cantidades[total++] = ventas[i].quantity;
+        }
+    }
+    printf("Cantidad de pizzas por categoria:\n");
+    for (int i = 0; i < total; i++) {
+        printf("%s: %d\n", categorias[i], cantidades[i]);
+    }
+}
+
+// Función principal: interpreta argumentos y ejecuta métricas
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        printf("Uso: %s archivo.csv metrica1 metrica2 ...\n", argv[0]);
+        return 1;
+    }
+
+    leer_csv(argv[1]);
+    agrupar_por_pizza();
+
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "pms") == 0) pizza_mas_vendida();
+        else if (strcmp(argv[i], "pls") == 0) pizza_menos_vendida();
+        else if (strcmp(argv[i], "dms") == 0) fecha_mas_menos("max", 1);
+        else if (strcmp(argv[i], "dls") == 0) fecha_mas_menos("min", 1);
+        else if (strcmp(argv[i], "dmsp") == 0) fecha_mas_menos("max", 0);
+        else if (strcmp(argv[i], "dlsp") == 0) fecha_mas_menos("min", 0);
+        else if (strcmp(argv[i], "apo") == 0) promedio_por_orden();
+        else if (strcmp(argv[i], "apd") == 0) promedio_por_dia();
+        else if (strcmp(argv[i], "ims") == 0) ingrediente_mas_vendido();
+        else if (strcmp(argv[i], "hp") == 0) cantidad_por_categoria();
+        else if (strcmp(argv[i], "debug") == 0) debug_resumen();
+        else printf("Metrica no reconocida: %s\n", argv[i]);
+    }
+
+    return 0;
+}
+
+
